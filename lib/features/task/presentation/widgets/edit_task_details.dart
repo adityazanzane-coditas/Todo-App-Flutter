@@ -115,9 +115,11 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
                   child: ElevatedButton(
                     onPressed: () {
                       final updatedTask = {
+                        'id': widget.task['id'],
                         'title': _taskController.text,
                         'description': _descriptionController.text,
                       };
+
                       Navigator.pop(context, updatedTask);
                     },
                     style: ButtonStyle(

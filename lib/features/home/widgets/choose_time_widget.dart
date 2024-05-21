@@ -3,7 +3,8 @@ import 'package:todo_app/core/theme/colors.dart';
 import 'package:todo_app/core/theme/fonts.dart';
 
 class ChooseTimeDialog extends StatefulWidget {
-  const ChooseTimeDialog({super.key});
+  final Function(TimeOfDay) onTimeSelected;
+  const ChooseTimeDialog({super.key, required this.onTimeSelected});
 
   @override
   _ChooseTimeDialogState createState() => _ChooseTimeDialogState();
@@ -88,7 +89,9 @@ class _ChooseTimeDialogState extends State<ChooseTimeDialog> {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                     child: Container(
                       alignment: Alignment.center,
                       padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -108,6 +111,17 @@ class _ChooseTimeDialogState extends State<ChooseTimeDialog> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
+                      TimeOfDay selectedTime = TimeOfDay(
+                        hour: _selectedHour % 12 == 0 ? 12 : _selectedHour % 12,
+                        minute: _selectedMinute,
+                      );
+                      if (_selectedPeriod == 'PM') {
+                        selectedTime = TimeOfDay(
+                          hour: (_selectedHour % 12) + 12,
+                          minute: _selectedMinute,
+                        );
+                      }
+                      widget.onTimeSelected(selectedTime);
                       Navigator.pop(context);
                     },
                     style: ButtonStyle(

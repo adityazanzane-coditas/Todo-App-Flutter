@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:todo_app/core/database/sql_helper.dart';
 import 'package:todo_app/core/theme/colors.dart';
 import 'package:todo_app/core/theme/fonts.dart';
 import 'package:todo_app/features/task/presentation/widgets/delete_dialog_box.dart';
@@ -10,8 +11,15 @@ import 'package:todo_app/features/task/presentation/widgets/edit_task_priority.d
 
 class TaskDetailsPage extends StatefulWidget {
   final Map<String, dynamic> task;
+  final void Function(Map<String, dynamic> updatedTask) updateTask;
+  final void Function(int id) deleteTask;
 
-  const TaskDetailsPage({super.key, required this.task});
+  const TaskDetailsPage({
+    super.key,
+    required this.task,
+    required this.updateTask,
+    required this.deleteTask,
+  });
 
   @override
   State<TaskDetailsPage> createState() => _TaskDetailsPageState();
@@ -26,6 +34,16 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
     super.initState();
     _title = widget.task['title'];
     _description = widget.task['description'] ?? '';
+  }
+
+  Map<String, dynamic> _updateTask(Map<String, dynamic> updatedTask) {
+    setState(() {
+      _title = updatedTask['title'];
+      _description = updatedTask['description'] ?? '';
+    });
+    SQLHelper.updateItem(
+        updatedTask['id'], updatedTask['title'], updatedTask['description']);
+    return updatedTask;
   }
 
   @override
@@ -63,16 +81,25 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                     ),
                   ),
                   GestureDetector(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return const EditTaskDialog(
-                                task: {},
-                              );
-                            });
-                      },
-                      child: SvgPicture.asset('assets/icons/edit-2edit.svg')),
+                    onTap: () async {
+                      final updatedTask =
+                          await showDialog<Map<String, dynamic>>(
+                        context: context,
+                        builder: (context) => EditTaskDialog(
+                          task: {
+                            'title': _title,
+                            'description': _description,
+                            'id': widget.task['id'],
+                          },
+                        ),
+                      );
+
+                      if (updatedTask != null) {
+                        _updateTask(updatedTask);
+                      }
+                    },
+                    child: SvgPicture.asset('assets/icons/edit-2edit.svg'),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -213,10 +240,18 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
               GestureDetector(
                 onTap: () {
                   showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const DeleteTaskDialog();
-                      });
+                    context: context,
+                    builder: (BuildContext context) {
+                      return DeleteTaskDialog(
+                        taskTitle: _title,
+                        onDeleteTask: () {
+                          widget.deleteTask(widget.task['id']);
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                      );
+                    },
+                  );
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -239,7 +274,14 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    final updatedTask = _updateTask({
+                      'title': _title,
+                      'description': _description,
+                      'id': widget.task['id'],
+                    });
+                    Navigator.pop(context, updatedTask);
+                  },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
                         const Color(0xff8687E7)),

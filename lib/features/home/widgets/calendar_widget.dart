@@ -143,7 +143,9 @@ class DailyCalendar extends StatelessWidget {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return const ChooseTimeDialog();
+                              return ChooseTimeDialog(
+                                onTimeSelected: (TimeOfDay) {},
+                              );
                             });
                       },
                       style: ButtonStyle(

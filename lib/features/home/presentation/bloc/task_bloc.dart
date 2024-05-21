@@ -21,3 +21,19 @@ class DialogsBloc extends Bloc<DialogsEvent, DialogsState> {
     });
   }
 }
+
+class TaskDetailsBloc extends Bloc<TaskDetailsEvent, TaskDetailsState> {
+  TaskDetailsBloc(TaskDetailsState initialState) : super(initialState) {
+    on<TitleChanged>(_onTitleChanged);
+    on<DescriptionChanged>(_onDescriptionChanged);
+  }
+
+  void _onTitleChanged(TitleChanged event, Emitter<TaskDetailsState> emit) {
+    emit(TaskDetailsState(title: event.title, description: state.description));
+  }
+
+  void _onDescriptionChanged(
+      DescriptionChanged event, Emitter<TaskDetailsState> emit) {
+    emit(TaskDetailsState(title: state.title, description: event.description));
+  }
+}

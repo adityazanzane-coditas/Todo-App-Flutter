@@ -37,7 +37,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       duration: const Duration(milliseconds: 150),
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
       height: 4.0,
-      width: isActive ? 30 : 30,
+      width: 30,
       decoration: BoxDecoration(
         color: isActive ? Colors.white : Colors.grey,
         borderRadius: const BorderRadius.all(Radius.circular(12)),
@@ -71,34 +71,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    child: TextButton(
-                      style: ButtonStyle(
-                        overlayColor:
-                            MaterialStateProperty.all(Colors.transparent),
-                        padding: MaterialStateProperty.all(
-                          const EdgeInsets.symmetric(
-                              vertical: 12.0, horizontal: 16.0),
-                        ),
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
+                  TextButton(
+                    style: ButtonStyle(
+                      overlayColor:
+                          MaterialStateProperty.all(Colors.transparent),
+                      padding: MaterialStateProperty.all(
+                        const EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 16.0),
+                      ),
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
-                      onPressed: () {
-                        if (_currentPage > 0) {
-                          _pageController.previousPage(
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.ease,
-                          );
-                        }
-                      },
-                      child: Text(
-                        'SKIP',
-                        style: getLato(
-                            FontWeight.w400, 16, const Color(0xff7A7A7A)),
-                      ),
+                    ),
+                    onPressed: () {
+                      AutoRouter.of(context).push(const HomeRoute());
+                    },
+                    child: Text(
+                      'SKIP',
+                      style:
+                          getLato(FontWeight.w400, 16, const Color(0xff7A7A7A)),
                     ),
                   ),
                   const Expanded(child: SizedBox()),
@@ -178,14 +171,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              
                             ),
-                            
                           ),
                           onPressed: () {
                             if (_currentPage == _totalPages - 1) {
-                              AutoRouter.of(context).push(
-                                  const HomeRoute()); 
+                              AutoRouter.of(context).push(const HomeRoute());
                             } else if (_currentPage < _totalPages - 1) {
                               _pageController.nextPage(
                                 duration: const Duration(milliseconds: 500),

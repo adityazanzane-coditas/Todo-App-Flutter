@@ -3,14 +3,13 @@ import 'package:sqflite/sqflite.dart';
 
 class SQLHelper {
   static Future<void> createTables(Database database) async {
-  await database.execute("""CREATE TABLE items(
-    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    title TEXT,
-    description TEXT,
-    category TEXT,
-    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-  )""");
-}
+    await database.execute("""CREATE TABLE items(
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        title TEXT,
+        description TEXT,
+        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+      )""");
+  }
 
   static Future<Database> db() async {
     return openDatabase(
@@ -24,7 +23,6 @@ class SQLHelper {
 
   static Future<int> createItem(String title, String? description) async {
     final db = await SQLHelper.db();
-
     final data = {'title': title, 'description': description};
     final id = await db.insert('items', data,
         conflictAlgorithm: ConflictAlgorithm.replace);
@@ -36,22 +34,27 @@ class SQLHelper {
     return db.query('items', orderBy: "id");
   }
 
-  static Future<List<Map<String, dynamic>>> getItem(int id) async {
+  static Future<Map<String, dynamic>?> getItem(int id) async {
     final db = await SQLHelper.db();
-    return db.query('items', where: "id = ?", whereArgs: [id], limit: 1);
+    final result =
+        await db.query('items', where: "id = ?", whereArgs: [id], limit: 1);
+    return result.isNotEmpty ? result.first : null;
   }
 
-  static Future<int> updateItems(int id, String title, String? description, String category) async {
-  final db = await SQLHelper.db();
-  final data = {
-    'title': title,
-    'description': description,
-    'category': category,
-    'createdAt': DateTime.now().toString()
-  };
-  final result = await db.update('items', data, where: "id = ?", whereArgs: [id]);
-  return result;
-}
+  static Future<void> updateItem(
+      int id, String title, String? description) async {
+    final db = await SQLHelper.db();
+    final data = {
+      'title': title,
+      'description': description,
+    };
+    await db.update(
+      'items',
+      data,
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
 
   static Future<void> deleteItem(int id) async {
     final db = await SQLHelper.db();

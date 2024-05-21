@@ -3,7 +3,14 @@ import 'package:todo_app/core/theme/colors.dart';
 import 'package:todo_app/core/theme/fonts.dart';
 
 class DeleteTaskDialog extends StatelessWidget {
-  const DeleteTaskDialog({super.key});
+  final String taskTitle;
+  final VoidCallback onDeleteTask;
+
+  const DeleteTaskDialog({
+    super.key,
+    required this.taskTitle,
+    required this.onDeleteTask,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +39,7 @@ class DeleteTaskDialog extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             Text(
-              'Are You sure you want to delete this task?\n            Task title : Do math homework',
+              'Are You sure you want to delete this task?\n Task title : $taskTitle',
               style: getLato(FontWeight.w500, 18, whiteTextColour),
             ),
             const SizedBox(height: 14),
@@ -61,15 +68,19 @@ class DeleteTaskDialog extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff8687E7),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
+                    onPressed: onDeleteTask,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color(0xff8687E7)),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
+                      overlayColor:
+                          MaterialStateProperty.all<Color>(Colors.transparent),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12.0),

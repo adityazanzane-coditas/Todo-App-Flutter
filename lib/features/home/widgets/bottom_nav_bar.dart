@@ -12,9 +12,7 @@ Widget CustomNavigationBar() {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         GestureDetector(
-          onTap: () {
-            print('Index button tapped');
-          },
+          onTap: () {},
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

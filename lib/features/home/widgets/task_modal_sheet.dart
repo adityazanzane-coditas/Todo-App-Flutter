@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:todo_app/core/database/sql_helper.dart';
+import 'package:todo_app/core/navigations/routes/app_router.gr.dart';
 import 'package:todo_app/core/theme/colors.dart';
 import 'package:todo_app/core/theme/fonts.dart';
 import 'package:todo_app/features/category/presentation/widgets/choose_category.dart';
@@ -156,7 +158,7 @@ class _TaskModalSheetState extends State<TaskModalSheet> {
                           _descriptionController.text,
                         );
                         widget.refreshTasks();
-                        Navigator.pop(context);
+                        AutoRouter.of(context).push(const HomeRoute());
                       },
                       child: SvgPicture.asset('assets/icons/sendsend.svg'),
                     ),
